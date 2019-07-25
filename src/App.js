@@ -4,12 +4,13 @@ import Auth from './components/Auth';
 import Header from './components/Header';
 import AuthContext from './auth-context';
 import './App.css';
+import Refcomp from './components/Refcomp';
 
 const App = () => {
     const [state, setState] = useState({list: false, auth: true});
     const [authStatus, setAuthStatus] = useState(false);
 
-    console.log(AuthContext);
+    // console.log(AuthContext);
 
     const login = () => {
         setAuthStatus(!authStatus);
@@ -26,6 +27,8 @@ const App = () => {
                 <hr />
                 {state.list && <Todo />}
                 {state.auth && <Auth />}
+                <hr/>
+                <Refcomp />
             </AuthContext.Provider>
         </div>
     );

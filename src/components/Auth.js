@@ -3,7 +3,7 @@ import AuthContext from '../auth-context';
 
 const Auth = () => {
     const auth = useContext(AuthContext);
-    console.log('auth :', auth);
+    // console.log('auth :', auth);
     return (
         <div>
             <h1>Auth Page</h1>

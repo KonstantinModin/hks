@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import axios from 'axios';
 import './Todo.css';
 
 const Todo = () => {
 
-    const [inputValue, setInputValue] = useState('');
+    useEffect(() => {
+        console.log('todo Render');
+    })
+    
+
+    // const [inputValue, setInputValue] = useState('');
     // const [todoItems, setTodoItems] = useState([]);   
 
     const todoListReducer = (state, { type, payload }) => {
@@ -13,7 +18,7 @@ const Todo = () => {
             case 'SET': return [...state, ...payload];
             case 'REMOVE': return state.filter(i => i !== payload);
             default: return state;
-        }
+        };
     };
 
     const [ todoItems, dispatch ] = useReducer(todoListReducer, []);
@@ -29,6 +34,7 @@ const Todo = () => {
     const [ counter, dispatchCounter] = useReducer(plusMinusReducer, 0);
 
 
+    
 
     useEffect(() => {
         axios.get('https://hks-testing.firebaseio.com/todos.json')
@@ -48,17 +54,26 @@ const Todo = () => {
     
     // const mouseMoveHandler = ({ clientX, clientY }) => console.log(clientX, clientY);
 
-    const inputHandler = ({target: {value}}) => {
-        setInputValue(prevState => {
-            // console.log('prevState', prevState);
-            return value;
-        })
-    };
+    // const inputHandler = ({target: {value}}) => {
+    //     setInputValue(prevState => {
+    //         // console.log('prevState', prevState);
+    //         return value;
+    //     })
+    // };
+
+    
+    
+
+    // console.log('todoInputRef :', todoInputRef);
+    // console.log('inputValue :', inputValue);
         
     const buttonHandler = () => {        
         // setTodoItems([...todoItems, inputValue]);
-        dispatch({type: 'ADD', payload: inputValue});            
-        setInputValue('');
+        const inputValue = todoInputRef.current.value;
+       dispatch({type: 'ADD', payload: inputValue});
+                   
+        // setInputValue('');
+        
     };
 
     const removeItemHandler = (e) => {
@@ -73,10 +88,11 @@ const Todo = () => {
             .catch(error => console.log('error', error));
         console.log('post todo Handler');
     };
+    const todoInputRef = useRef();    
     
     return (
         <div className="Todo">
-            <input onChange={inputHandler} type="text" placeholder="Enter your task" value={inputValue}/>
+            <input type="text" placeholder="Enter your task" ref={todoInputRef}/>
             <button onClick={buttonHandler} type="button">Add</button>
             <ul>
                 {todoItems.map((i) => <li onClick={removeItemHandler} key={Math.random()}>{i}</li>)}
