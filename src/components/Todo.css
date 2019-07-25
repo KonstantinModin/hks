@@ -10,5 +10,12 @@ li {
     border-radius: 12px;
     padding: 10px 0;
     margin: 10px 0;
+    background-color: rgb(248, 225, 225);
+    box-shadow: 2px 2px 12px 0px black;
+}
+
+li:hover {
     background-color: rgb(250, 216, 215);
+    transition: all 0.1s cubic-bezier(0.18, -1.24, 1, 2.62);
+    transform: scale(1.1);
 }
