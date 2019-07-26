@@ -1,12 +1,16 @@
-import React, { useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer, useRef, useMemo } from 'react';
 import axios from 'axios';
+import List from './List';
+import useFormInput from '../hooks/forms';
 import './Todo.css';
 
 const Todo = () => {
 
-    useEffect(() => {
-        console.log('todo Render');
-    })
+    const todoInput = useFormInput();
+
+    // useEffect(() => {
+    //     console.log('todo Render');
+    // })
     
 
     // const [inputValue, setInputValue] = useState('');
@@ -31,10 +35,7 @@ const Todo = () => {
         };
     };
 
-    const [ counter, dispatchCounter] = useReducer(plusMinusReducer, 0);
-
-
-    
+    const [ counter, dispatchCounter] = useReducer(plusMinusReducer, 0);    
 
     useEffect(() => {
         axios.get('https://hks-testing.firebaseio.com/todos.json')
@@ -59,28 +60,23 @@ const Todo = () => {
     //         // console.log('prevState', prevState);
     //         return value;
     //     })
-    // };
-
-    
-    
+    // };    
 
     // console.log('todoInputRef :', todoInputRef);
     // console.log('inputValue :', inputValue);
         
     const buttonHandler = () => {        
         // setTodoItems([...todoItems, inputValue]);
-        const inputValue = todoInputRef.current.value;
-       dispatch({type: 'ADD', payload: inputValue});
-                   
-        // setInputValue('');
-        
+        const inputValue = todoInput.value;
+       dispatch({type: 'ADD', payload: inputValue});                   
+        // setInputValue('');        
     };
 
     const removeItemHandler = (e) => {
         // e.persist();
         console.log(e.target.textContent);
         dispatch({type: 'REMOVE', payload: e.target.textContent});
-    }
+    };
 
     const postTodoHandler = () => {
         axios.post('https://hks-testing.firebaseio.com/todos.json', todoItems)
@@ -88,15 +84,27 @@ const Todo = () => {
             .catch(error => console.log('error', error));
         console.log('post todo Handler');
     };
-    const todoInputRef = useRef();    
+    // const todoInputRef = useRef(); 
+    
+    // const [ inputIsValid, setInputisValid ] = useState(false);
+    // const validationHandler = (e) => {
+    //     if (e.target.value.length > 4) setInputisValid(true)
+    //     else setInputisValid(false);
+    // };
     
     return (
         <div className="Todo">
-            <input type="text" placeholder="Enter your task" ref={todoInputRef}/>
+            <input 
+                type="text" 
+                placeholder="Enter your task" 
+                // ref={todoInputRef} 
+                // onChange={validationHandler}
+                onChange={todoInput.onChange}
+                value={todoInput.value}
+                style={{backgroundColor: todoInput.validity ? 'transparent' : 'red'}}/>
             <button onClick={buttonHandler} type="button">Add</button>
-            <ul>
-                {todoItems.map((i) => <li onClick={removeItemHandler} key={Math.random()}>{i}</li>)}
-            </ul>
+            {useMemo(() => (<List todoItems={todoItems} removeItemHandler={removeItemHandler}/>), 
+                [todoItems])}
             <button onClick={postTodoHandler} type="button">Post Todos</button>
             <hr/>
             <h2>Our counter: {counter}</h2>
